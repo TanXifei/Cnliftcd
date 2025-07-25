@@ -13,14 +13,48 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
-        body {
-            background-image:url('https://pic2.ziyuan.wang/user/tanxifei/2025/07/1753023325948f98b2584cb554a915d0f44bbaac5eb384210514d90274fec50254bbb78fecd4d.0_24df9e5195b9d.jpg');
+                body {
             color: #fff;
             min-height: 100vh;
             padding: 40px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* 电脑端背景 */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://pic2.ziyuan.wang/user/tanxifei/2025/04/freecompress-Yuuka_home_Talk_05_M_4.016599999999996_bd26d717dd748.png') no-repeat center center;
+            background-size: cover;
+            z-index: -1;
+        }
+        
+        /* 移动端背景 */
+        @media (max-width: 768px) {
+            body::before {
+                background: url('https://pic2.ziyuan.wang/user/tanxifei/2025/07/1753023325948f98b2584cb554a915d0f44bbaac5eb384210514d90274fec50254bbb78fecd4d.0_24df9e5195b9d.jpg') no-repeat center center;
+                background-size: cover;
+            }
+        }
+        
+        /* 背景遮罩 */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: -1;
         }
         
         .header {
