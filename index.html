@@ -279,9 +279,9 @@
         <div class="modal-content">
             <span class="close-btn" id="closeModal">&times;</span>
             <h2 class="modal-title" id="modalTitle"></h2>
-            <img class="modal-image" id="modalImage" src="" alt="事件图片">
+            <img class="modal-image" id="modalImage" src="" alt="建筑外观图">
             <p class="modal-message" id="modalMessage"></p>
-            <button class="modal-btn" id="modalButton">确定</button>
+            <button class="modal-btn" id="modalButton">哦。</button>
         </div>
     </div>
     
@@ -373,7 +373,7 @@
                             <div class="progress-bar" id="progress-${event.id}"></div>
                         </div>
                         
-                        <div class="status" id="status-${event.id}">倒计时中...</div>
+                        <div class="status" id="status-${event.id}">仍在冷却期...</div>
                     </div>
                 `;
                 
@@ -385,7 +385,7 @@
                 // 如果事件已过期，添加expired类
                 if (expired) {
                     card.classList.add('expired');
-                    document.getElementById(`status-${event.id}`).textContent = '已过期';
+                    document.getElementById(`status-${event.id}`).textContent = '冷却期结束了';
                 }
             });
         }
