@@ -3,146 +3,341 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>倒计日电梯 | Countdown Elevator</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <!-- Icon Library -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-
+    <title>倒计时卡片系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root {
-            --primary-color: #0ea5e9;
-            --secondary-color: #6366f1;
-            --background-color: #0f172a; /* Even darker blue background */
-            --card-background-color: #1e293b;
-            --border-color: #334155;
-            --text-primary: #e2e8f0;
-            --text-secondary: #94a3b8;
-        }
-
-        html { scroll-behavior: smooth; }
-
-        body {
-            font-family: 'Inter', 'Noto Sans SC', sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-primary);
-            transition: background-color 0.5s ease;
-        }
-
-        .page {
-            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
-            width: 100%;
-        }
-        .page.hidden {
-            opacity: 0;
-            transform: scale(0.98);
-            pointer-events: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        .elevator-shaft {
-            max-width: 600px;
-            margin: 2rem auto;
-            padding: 1rem;
-        }
-
-        .countdown-card {
-            background-color: var(--card-background-color);
-            border: 1px solid var(--border-color);
-            border-radius: 1.5rem;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1), 0 0 50px rgba(14, 165, 233, 0.1);
-            position: relative;
-        }
-        .countdown-card:hover {
-            transform: translateY(-5px) scale(1.02);
-            border-color: var(--primary-color);
-        }
-
-        .image-container {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            background-color: var(--border-color);
-            border-radius: 1rem;
-            overflow: hidden;
-            margin: 0.5rem 0;
-            display: none; /* Hidden by default */
-        }
-        .countdown-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .day-display {
-            font-size: 4.5rem;
-            font-weight: 900;
-            line-height: 1;
-            background: linear-gradient(145deg, var(--primary-color), var(--secondary-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-fill-color: transparent;
-            text-shadow: 0 0 25px rgba(14, 165, 233, 0.3);
-        }
-
-        .progress-bar-container {
-            width: 100%;
-            background-color: var(--border-color);
-            height: 12px;
-            border-radius: 9999px;
-            overflow: hidden;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            border-radius: 9999px;
-            transition: width 0.5s ease-out;
-            box-shadow: 0 0 10px var(--primary-color);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
-        #search-box, .form-input {
-            background-color: var(--card-background-color);
-            border: 1px solid var(--border-color);
-            border-radius: 1rem;
-            padding: 0.75rem 1.25rem;
-            width: 100%;
-            font-size: 1rem;
-            color: var(--text-primary);
-            transition: all 0.3s ease;
-        }
-        #search-box:focus, .form-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.5);
-        }
-
-        .fab {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 4rem;
-            height: 4rem;
-            border-radius: 9999px;
-            background: linear-gradient(145deg, var(--primary-color), var(--secondary-color));
-            color: white;
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            color: #fff;
+            min-height: 100vh;
+            padding: 40px 20px;
             display: flex;
+            flex-direction: column;
             align-items: center;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            max-width: 800px;
+        }
+        
+        h1 {
+            font-size: 3.2rem;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fad0c4, #a1c4fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .container {
+            display: flex;
+            flex-wrap: wrap;
             justify-content: center;
-            font-size: 2rem;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+            gap: 30px;
+            max-width: 1400px;
+            width: 100%;
+        }
+        
+        .countdown-card {
+            width: 320px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+            position: relative;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .countdown-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            background: rgba(255, 255, 255, 0.12);
+        }
+        
+        .countdown-card.expired {
+            border: 2px solid #4CAF50;
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.4);
+        }
+        
+        .card-image {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .card-content {
+            padding: 25px;
+        }
+        
+        .card-title {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        .target-date {
+            font-size: 1rem;
+            color: #bbb;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .countdown {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .time-unit {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 8px 5px;
+            border-radius: 8px;
+            width: 23%;
+        }
+        
+        .time-value {
+            font-size: 1.6rem;
+            font-weight: bold;
+            display: block;
+            color: #ff9a9e;
+        }
+        
+        .time-label {
+            font-size: 0.8rem;
+            color: #aaa;
+            text-transform: uppercase;
+        }
+        
+        .progress-container {
+            background: rgba(0, 0, 0, 0.2);
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ff9a9e, #fad0c4);
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .expired .progress-bar {
+            background: #4CAF50;
+            width: 100% !important;
+        }
+        
+        .status {
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #ff9a9e;
+        }
+        
+        .expired .status {
+            color: #4CAF50;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
             z-index: 100;
-  
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #2c3e50, #1a2a6c);
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #aaa;
+            transition: color 0.3s;
+        }
+        
+        .close-btn:hover {
+            color: #fff;
+        }
+        
+        .modal-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #ff9a9e;
+        }
+        
+        .modal-message {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .modal-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .modal-btn {
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            color: #1a2a6c;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                gap: 20px;
+            }
+            
+            .countdown-card {
+                width: 100%;
+                max-width: 400px;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-hourglass-half"></i> 重要事件倒计时</h1>
+        <p class="subtitle">追踪您生活中的重要时刻，每个卡片代表一个倒计时事件，到期后卡片将变为绿色并通知您</p>
+    </div>
+    
+    <div class="container" id="cardsContainer">
+        <!-- 卡片将通过JavaScript动态生成 -->
+    </div>
+    
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <h2 class="modal-title" id="modalTitle"></h2>
+            <img class="modal-image" id="modalImage" src="" alt="事件图片">
+            <p class="modal-message" id="modalMessage"></p>
+            <button class="modal-btn" id="modalButton">确定</button>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>© 2023 倒计时卡片系统 | 每个重要时刻都值得期待</p>
+    </div>
+
+    <script>
+        // 倒计时事件数据
+        const countdownEvents = [
+            {
+                id: 1,
+                title: "项目截止日期",
+                targetDate: "2023-12-15T23:59:59",
+                image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+                description: "重要项目提交的最后期限"
+            },
+            {
+                id: 2,
+                title: "好友婚礼",
+                targetDate: "2024-05-20T12:00:00",
+                image: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+                description: "好友的浪漫婚礼庆典"
+            },
+            {
+                id: 3,
+                title: "产品发布会",
+                targetDate: "2023-11-30T14:00:00",
+                image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+                description: "新产品发布与展示会"
+            },
+            {
+                id: 4,
+                title: "假期开始",
+                targetDate: "2023-12-22T00:00:00",
+                image: "https://images.unsplash.com/photo-1505228395891-9a51e7e86bf6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+                description: "期待已久的假期即将开始"
+            }
+        ];
+
+        // 获取DOM元素
+        const cardsContainer = document.getElementById('cardsContainer');
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalImage = document.getElementById('modalImage');
+        const modalMessage = document.getElementById('modalMessage');
+        const closeModal = document.getElementById('closeModal');
+        const modalButton = document.getElementById('modalButton');
+
+        // 创建倒计时卡片
+        function createCountdownCards() {
+            cardsContainer.innerHTML = '';
+            
+            countdownEvents.forEach(event => {
+                const card = document.createElement('div');
+                card.className = 'countdown-card';
+                card.dataset.id = event.id;
+                
+                const targ
