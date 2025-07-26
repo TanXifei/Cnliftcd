@@ -348,9 +348,9 @@
             modalImage.src = event.image;
             
             if (expired) {
-                modalMessage.textContent = `冷却期已于 ${formatDate(new Date(event.targetDate))} 结束。导致进入冷却期的原因: ${event.description}`;
+                modalMessage.textContent = `冷却期已于 ${formatDate(new Date(event.targetDate))} 结束<br />导致进入冷却期的原因: ${event.description}`;
             } else {
-                modalMessage.textContent = `冷却期将在 ${formatDate(new Date(event.targetDate))} 结束。导致进入冷却期的原因: ${event.description}`;
+                modalMessage.textContent = `冷却期将在 ${formatDate(new Date(event.targetDate))} 结束<br />导致进入冷却期的原因: ${event.description}`;
             }
             
             modal.style.display = 'flex';
