@@ -44,7 +44,7 @@
         /* 移动端背景 */
         @media (max-width: 768px) {
             body::before {
-                background: url('https://pic2.ziyuan.wang/user/tanxifei/2025/07/17535487984230ba2905e47799d9b58c5b7ee8147bfca737a0e7b92440afb6b792a83a96b8529.0_compressed_00f1047cc1b4b.jpg.0_0484a8ef4620c.jpg') no-repeat center center;
+                background: url('https://pic2.ziyuan.wang/user/tanxifei/2025/07/17535487984230ba2905e47799d9b58c5b7ee8147bfca737a0e7b92440afb6b792a83a96b8529.0_compressed_00f1047cc1b4b.jpg') no-repeat center center;
                 background-size: cover;
             }
         }
@@ -348,9 +348,9 @@
             modalImage.src = event.image;
             
             if (expired) {
-                modalMessage.textContent = `冷却期已于 ${formatDate(new Date(event.targetDate))} 结束\r\n导致进入冷却期的原因: ${event.description}`;
+                modalMessage.textContent = `冷却期已于 ${formatDate(new Date(event.targetDate))} 结束 \r\n 导致进入冷却期的原因: ${event.description}`;
             } else {
-                modalMessage.textContent = `冷却期将在 ${formatDate(new Date(event.targetDate))} 结束\r\n导致进入冷却期的原因: ${event.description}`;
+                modalMessage.textContent = `冷却期将在 ${formatDate(new Date(event.targetDate))} 结束 \r\n 导致进入冷却期的原因: ${event.description}`;
             }
             
             modal.style.display = 'flex';
