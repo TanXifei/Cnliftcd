@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中国建筑电梯拍摄CD期倒计时</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- 引入 Supabase-js 客户端 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/irozhi/HarmonyOS-Sans/HarmonyOS_Sans_SC/HarmonyOS_Sans_SC_Medium.woff');
+        @import url('https://cdn.jsdelivr.net/gh/irozhi/HarmonyOS-Sans/HarmonyOS_Sans_SC/HarmonyOS_Sans_SC_Medium.woff2');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: HarmonyOS_Sans_SC_Medium, sans-serif;
+        }
+        
+        body {
+            color: #fff;
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* 电脑端背景 */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://pic2.ziyuan.wang/user/tanxifei/2024/08/Image_1723309741718_7878c1713a654.png') no-repeat center center;
+            background-size: cover;
+            z-index: -1;
+        }
+        
+        /* 移动端背景 */
+        @media (max-width: 768px) {
+            body::before {
+                background: url('https://pic2.ziyuan.wang/user/tanxifei/2025/07/17535487984230ba2905e47799d9b58c5b7ee8147bfca737a0e7b92440afb6b792a83a96b8529.0_compressed_00f1047cc1b4b.jpg') no-repeat center center;
+                background-size: cover;
+            }
+        }
+        
+        /* 背景遮罩 */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: -1;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            max-width: 1000px;
+            width: 100%;
+        }
+        
+        h1 {
+            font-size: 4.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 3px 15px rgba(0,0,0,0.4);
+            background: linear-gradient(to right, #ffff00, #ffdd00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+            line-height: 1.1;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto 5px;
+            line-height: 1.6;
+        }
+
+        .filters-container {
+            max-width: 1000px;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .search-container {
+             margin: 0 auto 20px auto;
+             max-width: 600px;
+             width: 90%;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 1rem;
+            color: #333;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+        
+        #region-filter-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .region-btn {
+            padding: 8px 18px;
+            font-size: 0.9rem;
+            color: #fff;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .region-btn:hover {
+             background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .region-btn.active {
+            background-color: #fff;
+            color: #2c3e50;
+            font-weight: bold;
+            border-color: #fff;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            gap: 15px;
+        }
+
+        .tab-btn {
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fff;
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .tab-btn.active {
+            background-color: #fff;
+            color: #2c3e50;
+            border-color: #fff;
+        }
+
+        .main-content-wrapper {
+            width: 100%;
+            max-width: 1400px;
+        }
+        
+        .content-section {
+            display: none; /* Initially hide all sections */
+        }
+        .content-section.active {
+            display: block; /* Show active section */
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            width: 100%;
+        }
+        
+        .countdown-card {
+            width: 320px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .countdown-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            background: rgba(255, 255, 255, 0.12);
+        }
+        
+        .countdown-card.expired {
+            border: 2px solid #4CAF50;
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.4);
+        }
+        
+        .card-image {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .card-content { padding: 25px; }
+        .card-title { font-size: 1.8rem; margin-bottom: 10px; color: #fff; font-weight: 600; }
+        .target-date { font-size: 1rem; color: #bbb; margin-bottom: 20px; display: block; }
+        .countdown { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .time-unit { text-align: center; background: rgba(0, 0, 0, 0.2); padding: 8px 5px; border-radius: 8px; width: 23%; }
+        .time-value { font-size: 1.6rem; font-weight: bold; display: block; color: #ff9a9e; }
+        .time-label { font-size: 0.8rem; color: #aaa; text-transform: uppercase; }
+        .progress-container { background: rgba(0, 0, 0, 0.2); height: 10px; border-radius: 5px; overflow: hidden; margin-top: 15px; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #ff9a9e, #fad0c4); border-radius: 5px; width: 0%; transition: width 0.5s ease; }
+        .expired .progress-bar { background: #4CAF50; width: 100% !important; }
+        .status { margin-top: 15px; text-align: center; font-weight: bold; font-size: 1.1rem; color: #ff9a9e; }
+        .expired .status { color: #4CAF50; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 100; justify-content: center; align-items: center; }
+        .modal-content { background: linear-gradient(135deg, #4d469f, #201e4f); border-radius: 16px; padding: 30px; max-width: 500px; width: 90%; text-align: center; position: relative; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7); border: 2px solid rgba(255, 255, 255, 0.1); }
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 28px; cursor: pointer; color: #aaa; transition: color 0.3s; }
+        .close-btn:hover { color: #fff; }
+        .modal-title { font-size: 2rem; margin-bottom: 20px; color: #ffffff; }
+        .modal-message { font-size: 1.2rem; margin-bottom: 30px; line-height: 1.6; }
+        .modal-image { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; margin-bottom: 25px; }
+        .modal-btn { background: linear-gradient(45deg, #ffffff, #ffffff); border: none; padding: 12px 30px; border-radius: 50px; color: #000000; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: all 0.3s; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); }
+        .modal-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 10px rgba(0, 0, 0, 0.3); }
+        
+        .footer { margin-top: 50px; text-align: center; color: rgba(255, 255, 255, 0.7); font-size: 0.9rem; }
+        
+        .empty-message {
+            text-align: center;
+            width: 100%;
+            font-size: 1.2rem;
+            padding: 40px 0;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        @media (max-width: 768px) {
+            .container { gap: 20px; }
+            .countdown-card { width: 100%; max-width: 400px; }
+            h1 { font-size: 3.5rem; }
+        }
+        @media (max-width: 480px) {
+            h1 { font-size: 2.8rem; }
+            .tab-btn { font-size: 1rem; padding: 10px 20px;}
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>中国建筑电梯拍摄冷却期倒计时</h1>
+        <p class="subtitle">该地点CD期结束后,卡片将自动移动到历史记录</p>
+    </div>
+    
+    <div class="filters-container">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="🔍 搜寻地点...... 可输入区域或建筑物名称">
+        </div>
+        <div id="region-filter-container">
+            <!-- 地区筛选按钮将动态生成于此 -->
+        </div>
+    </div>
+    
+    <div class="nav-tabs">
+        <button class="tab-btn active" data-view="ongoing">
+            <i class="fas fa-hourglass-half"></i> 正在进行
+        </button>
+        <button class="tab-btn" data-view="history">
+            <i class="fas fa-history"></i> 历史记录
+        </button>
+    </div>
+
+    <div class="main-content-wrapper">
+        <div id="ongoing-section" class="content-section active">
+            <div class="container" id="ongoingContainer"></div>
+        </div>
+        <div id="history-section" class="content-section">
+            <div class="container" id="historyContainer"></div>
+        </div>
+    </div>
+    
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <h2 class="modal-title" id="modalTitle"></h2>
+            <img class="modal-image" id="modalImage" src="" alt="建筑外观图">
+            <p class="modal-message" id="modalMessage"></p>
+            <button class="modal-btn" id="modalButton">哦。</button>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>© 2025 谭汐霏&Yaz001丨<a href="https://tally.so/r/mRXOyQ" style="color: white;">点击此处自助提交地点</a></p>
+    </div>
+
+    <script>
+        // --- Supabase 设定 ---
+        const SUPABASE_URL = 'https://umihjgbdthaeqdqbswdo.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtaWhqZ2JkdGhhZXFkcWJzd2RvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM1MTgxODUsImV4cCI6MjA2OTA5NDE4NX0.wHv93Jh3DFO_e2VSLhECcY8Rv2CTllrqwj5zZwdC2og';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // --- 全局状态变量 ---
+        let countdownEvents = [];
+        let currentView = 'ongoing'; // 'ongoing' or 'history'
+        let currentRegion = 'all';
+
+        // --- DOM 元素获取 ---
+        const ongoingContainer = document.getElementById('ongoingContainer');
+        const historyContainer = document.getElementById('historyContainer');
+        const searchInput = document.getElementById('searchInput');
+        const regionFilterContainer = document.getElementById('region-filter-container');
+        const tabs = document.querySelectorAll('.tab-btn');
+        const contentSections = document.querySelectorAll('.content-section');
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalImage = document.getElementById('modalImage');
+        const modalMessage = document.getElementById('modalMessage');
+        const closeModalBtn = document.getElementById('closeModal');
+        const modalButton = document.getElementById('modalButton');
+
+        // --- 函数定义 ---
+
+        /**
+         * 渲染地区筛选按钮
+         */
+        function renderRegionFilters() {
+            const regions = new Set(countdownEvents.map(event => {
+                const titleParts = event.title.split(' ');
+                return titleParts.length > 1 ? titleParts[0] : '其他';
+            }));
+
+            regionFilterContainer.innerHTML = '<button class="region-btn active" data-region="all">全部地区</button>';
+            regions.forEach(region => {
+                const btn = document.createElement('button');
+                btn.className = 'region-btn';
+                btn.dataset.region = region;
+                btn.textContent = region;
+                regionFilterContainer.appendChild(btn);
+            });
+        }
+
+        /**
+         * 根据筛选条件和当前视图创建倒数计时卡片
+         */
+        function renderCards() {
+            ongoingContainer.innerHTML = '';
+            historyContainer.innerHTML = '';
+            const lowerCaseFilter = searchInput.value.toLowerCase();
+
+            // 1. 按地区筛选
+            const regionFiltered = currentRegion === 'all'
+                ? countdownEvents
+                : countdownEvents.filter(event => (event.title.split(' ')[0] === currentRegion) || (currentRegion === '其他' && event.title.split(' ').length === 1));
+
+            // 2. 按搜索框文本筛选
+            const fullyFiltered = regionFiltered.filter(event => 
+                event.title.toLowerCase().includes(lowerCaseFilter)
+            );
+            
+            let ongoingCount = 0;
+            let historyCount = 0;
+
+            fullyFiltered.forEach(event => {
+                const card = document.createElement('div');
+                card.className = 'countdown-card';
+                card.dataset.id = event.id;
+                
+                const targetDate = new Date(event.targetDate);
+                const now = new Date();
+                const expired = targetDate <= now;
+                
+                card.innerHTML = `
+                    <img class="card-image" src="${event.image}" alt="${event.title}" onerror="this.onerror=null;this.src='https://placehold.co/400x200/2c3e50/ffffff?text=Image+Not+Found';">
+                    <div class="card-content">
+                        <h3 class="card-title">${event.title}</h3>
+                        <span class="target-date"><i class="far fa-calendar-alt"></i> ${formatDate(targetDate)}</span>
+                        <div class="countdown">
+                            <div class="time-unit"><span class="time-value" id="days-${event.id}">00</span><span class="time-label">天</span></div>
+                            <div class="time-unit"><span class="time-value" id="hours-${event.id}">00</span><span class="time-label">小时</span></div>
+                            <div class="time-unit"><span class="time-value" id="minutes-${event.id}">00</span><span class="time-label">分钟</span></div>
+                            <div class="time-unit"><span class="time-value" id="seconds-${event.id}">00</span><span class="time-label">秒</span></div>
+                        </div>
+                        <div class="progress-container"><div class="progress-bar" id="progress-${event.id}"></div></div>
+                        <div class="status" id="status-${event.id}"></div>
+                    </div>
+                `;
+                
+                card.addEventListener('click', () => showModal(event, expired));
+                
+                const statusEl = card.querySelector(`#status-${event.id}`);
+                if (expired) {
+                    card.classList.add('expired');
+                    statusEl.textContent = '冷却期结束了';
+                    historyContainer.appendChild(card);
+                    historyCount++;
+                } else {
+                    statusEl.textContent = '仍在冷却期...';
+                    ongoingContainer.appendChild(card);
+                    ongoingCount++;
+                }
+            });
+
+            if (ongoingCount === 0) {
+                 ongoingContainer.innerHTML = '<p class="empty-message">没有符合条件的进行中地点。</p>';
+            }
+            if (historyCount === 0) {
+                 historyContainer.innerHTML = '<p class="empty-message">没有符合条件的历史地点。</p>';
+            }
+        }
+
+        /**
+         * 更新所有卡片的倒数计时时间和进度条
+         */
+        function updateCountdowns() {
+            let needsRender = false;
+            const now = new Date();
+            
+            countdownEvents.forEach(event => {
+                const card = document.querySelector(`.countdown-card[data-id="${event.id}"]`);
+                if (!card) return; // 如果卡片不在当前视图中，则跳过
+
+                const targetDate = new Date(event.targetDate);
+                const timeRemaining = targetDate - now;
+
+                if (timeRemaining > 0) {
+                    const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+                    
+                    document.getElementById(`days-${event.id}`).textContent = days.toString().padStart(2, '0');
+                    document.getElementById(`hours-${event.id}`).textContent = hours.toString().padStart(2, '0');
+                    document.getElementById(`minutes-${event.id}`).textContent = minutes.toString().padStart(2, '0');
+                    document.getElementById(`seconds-${event.id}`).textContent = seconds.toString().padStart(2, '0');
+                    
+                    if (event.created_at) {
+                        const startDate = new Date(event.created_at);
+                        const totalDuration = targetDate - startDate;
+                        if (totalDuration > 0) {
+                            const timePassed = now - startDate;
+                            const progress = (timePassed / totalDuration) * 100;
+                            document.getElementById(`progress-${event.id}`).style.width = `${Math.min(100, Math.max(0, progress))}%`;
+                        }
+                    }
+                } else {
+                    if (!card.classList.contains('expired')) {
+                        needsRender = true; // 倒计时结束，需要重新渲染以移动卡片
+                    }
+                }
+            });
+
+            if (needsRender) {
+                renderCards();
+            }
+        }
+
+        function showModal(event, expired) {
+            modalTitle.textContent = event.title;
+            modalImage.src = event.image;
+            modalMessage.textContent = expired
+                ? `冷却期已于 ${formatDate(new Date(event.targetDate))} 结束, 导致进入冷却期的原因: ${event.description}`
+                : `冷却期将在 ${formatDate(new Date(event.targetDate))} 结束, 导致进入冷却期的原因: ${event.description}`;
+            modal.style.display = 'flex';
+        }
+
+        function closeModalHandler() {
+            modal.style.display = 'none';
+        }
+
+        function formatDate(date) {
+            return date.toLocaleDateString('zh-CN', {
+                year: 'numeric', month: 'long', day: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+        }
+
+        async function init() {
+            ongoingContainer.innerHTML = '<p class="empty-message">正在从数据库加载数据...</p>';
+
+            const { data, error } = await supabaseClient.from('CNLiftCD').select('*').order('targetDate', { ascending: true });
+
+            if (error) {
+                console.error('获取资料时出错:', error);
+                ongoingContainer.innerHTML = `<p style="color: #ff9a9e;" class="empty-message">无法加载数据。<br>${error.message}</p>`;
+                return;
+            }
+
+            countdownEvents = data;
+            
+            renderRegionFilters();
+            renderCards();
+            updateCountdowns();
+            setInterval(updateCountdowns, 1000);
+            
+            // --- 事件监听器 ---
+            searchInput.addEventListener('input', () => {
+                renderCards();
+                updateCountdowns(); 
+            });
+
+            regionFilterContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('region-btn')) {
+                    document.querySelector('.region-btn.active').classList.remove('active');
+                    e.target.classList.add('active');
+                    currentRegion = e.target.dataset.region;
+                    renderCards();
+                    updateCountdowns();
+                }
+            });
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentView = tab.dataset.view;
+
+                    contentSections.forEach(section => {
+                        section.classList.remove('active');
+                        if (section.id === `${currentView}-section`) {
+                            section.classList.add('active');
+                        }
+                    });
+                });
+            });
+
+            closeModalBtn.addEventListener('click', closeModalHandler);
+            modalButton.addEventListener('click', closeModalHandler);
+            window.addEventListener('click', (e) => {
+                if (e.target === modal) closeModalHandler();
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
+
