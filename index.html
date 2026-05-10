@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+    <link href="https://fontsapi.zeoseven.com/979/main/result.css" onload="this.rel='stylesheet'" rel="preload" as="style" crossorigin />
+    <noscript><link rel="stylesheet" href="https://fontsapi.zeoseven.com/979/main/result.css" /></noscript>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,16 +10,11 @@
     <!-- 引入 Supabase-js 客户端 -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        @import url('https://cdn.jsdelivr.net/gh/irozhi/HarmonyOS-Sans/HarmonyOS_Sans_SC/HarmonyOS_Sans_SC_Medium.woff');
-        @import url('https://cdn.jsdelivr.net/gh/irozhi/HarmonyOS-Sans/HarmonyOS_Sans_SC/HarmonyOS_Sans_SC_Medium.woff2');
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: HarmonyOS_Sans_SC_Medium, sans-serif;
-        }
+        
         
         body {
+            font-family: "Geource Sans CHS";
+            font-weight: normal;
             color: #fff;
             min-height: 100vh;
             padding: 40px 20px;
@@ -216,16 +213,21 @@
         }
         
         .card-content { padding: 25px; }
-        .card-title { font-size: 1.8rem; margin-bottom: 10px; color: #fff; font-weight: 600; }
+        .card-title { 
+            font-size: 1.8rem; 
+            margin-bottom: 10px; 
+            color: #fff; 
+            font-weight: 600; 
+        }
         .target-date { font-size: 1rem; color: #bbb; margin-bottom: 20px; display: block; }
         .countdown { display: flex; justify-content: space-between; margin-bottom: 20px; }
-        .time-unit { text-align: center; background: rgba(0, 0, 0, 0.2); padding: 8px 5px; border-radius: 8px; width: 23%; }
-        .time-value { font-size: 1.6rem; font-weight: bold; display: block; color: #ff9a9e; }
+        .time-unit { text-align: center; background: rgba(0, 0, 0, 0.2); padding: 6px 4px; border-radius: 4px; width: 20%; margin: 0 2px; }
+        .time-value { font-size: 1.6rem; font-weight: 600; display: block; color: #ffffff; }
         .time-label { font-size: 0.8rem; color: #aaa; text-transform: uppercase; }
         .progress-container { background: rgba(0, 0, 0, 0.2); height: 10px; border-radius: 5px; overflow: hidden; margin-top: 15px; }
-        .progress-bar { height: 100%; background: linear-gradient(90deg, #ff9a9e, #fad0c4); border-radius: 5px; width: 0%; transition: width 0.5s ease; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #727272, #ffffff); border-radius: 5px; width: 0%; transition: width 0.5s ease; }
         .expired .progress-bar { background: #4CAF50; width: 100% !important; }
-        .status { margin-top: 15px; text-align: center; font-weight: bold; font-size: 1.1rem; color: #ff9a9e; }
+        .status { margin-top: 15px; text-align: center; font-weight: 500; font-size: 1.1rem; color: #ffffff; }
         .expired .status { color: #4CAF50; }
         
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 100; justify-content: center; align-items: center; }
@@ -264,11 +266,12 @@
         <h1>中国建筑电梯拍摄冷却期倒计时</h1>
         <p class="subtitle">请不要把此页面用于发泄个人恩怨</p>
         <p class="subtitle">该地点CD期结束后,卡片将自动移动到历史记录</p>
+        <p class="subtitle">若界面出现异常，请及时报告</p>
     </div>
     
     <div class="filters-container">
         <div class="search-container">
-            <input type="text" id="searchInput" placeholder="🔍 搜寻地点...... 可输入区域或建筑物名称">
+            <input type="text" id="searchInput" placeholder="搜寻地点...... 可输入区域或建筑物名称">
         </div>
         <div id="region-filter-container">
             <!-- 地区筛选按钮将动态生成于此 -->
@@ -415,10 +418,10 @@
             });
 
             if (ongoingCount === 0) {
-                 ongoingContainer.innerHTML = '<p class="empty-message">没有符合条件的进行中地点。</p>';
+                 ongoingContainer.innerHTML = '<p class="empty-message">没有符合条件的地点。</p>';
             }
             if (historyCount === 0) {
-                 historyContainer.innerHTML = '<p class="empty-message">没有符合条件的历史地点。</p>';
+                 historyContainer.innerHTML = '<p class="empty-message">没有符合条件的地点。</p>';
             }
         }
 
@@ -471,6 +474,8 @@
         function showModal(event, expired) {
             modalTitle.textContent = event.title;
             modalImage.src = event.image;
+            modalImage.onerror = () => {
+                modalImage.src = 'https://pic2.ziyuan.wang/user/tanxifei/2026/05/00noimage_34362ab49fcbc.png'; modalImage.style.objectFit = 'contain';}
             modalMessage.textContent = expired
                 ? `冷却期已于 ${formatDate(new Date(event.targetDate))} 结束, 导致进入冷却期的原因: ${event.description}`
                 : `冷却期将在 ${formatDate(new Date(event.targetDate))} 结束, 导致进入冷却期的原因: ${event.description}`;
