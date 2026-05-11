@@ -88,24 +88,124 @@
             max-width: 1000px;
             width: 100%;
             margin-bottom: 30px;
+            position: relative;
+            z-index: 2;
         }
 
         .search-container {
-             margin: 0 auto 20px auto;
-             max-width: 600px;
-             width: 90%;
+            margin: 0 auto 20px;
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            z-index: 3;
         }
 
         #searchInput {
             width: 100%;
-            padding: 12px 20px;
+            box-sizing: border-box;
+            padding: 16px 24px;
             font-size: 1rem;
-            color: #333;
-            background-color: rgba(255, 255, 255, 0.5);
-            border-radius: 50px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(5px);
-            transition: all 0.3s ease;
+            color: #2c3e50;
+            background-color: rgba(255, 255, 255, 0.45);
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.18);
+            backdrop-filter: blur(12px);
+            transition: all 0.25s ease;
+            outline: none;
+        }
+
+        #searchInput:focus {
+            background-color: #ffffff;
+            border-color: rgba(255, 255, 255, 1);
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+            transform: translateY(-1px);
+        }
+
+        #searchInput::placeholder {
+            color: rgba(44, 62, 80, 0.55);
+        }
+
+        .search-container:focus-within + #searchOverlay {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .search-hint {
+            position: absolute;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ffffff;
+            font-size: 2rem;
+            font-weight: 600;
+            padding: 8px 16px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+            pointer-events: none;
+            white-space: nowrap;
+            z-index: 4;
+        }
+
+        .search-container:focus-within .search-hint {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #searchOverlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease;
+            pointer-events: none;
+            z-index: 1;
+            backdrop-filter: blur(2px);
+        }
+
+        #pageLoader {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 24px;
+            background: #363636;
+            z-index: 9999;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        #pageLoader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        #pageLoader .loader-title {
+            font-size: clamp(1.8rem, 2.4vw, 3rem);
+            letter-spacing: 0.12em;
+            font-weight: 500;
+        }
+
+        #pageLoader .loader-progress {
+            width: min(360px, 90%);
+            height: 10px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.15);
+            overflow: hidden;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+        }
+
+        #pageLoader .loader-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #585858, #ffffff);
+            transition: width 0.1s linear;
         }
         
         #region-filter-container {
@@ -154,6 +254,7 @@
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s ease;
+            backdrop-filter: blur(2px)
         }
         .tab-btn.active {
             background-color: #fff;
@@ -230,8 +331,8 @@
         .status { margin-top: 15px; text-align: center; font-weight: 500; font-size: 1.1rem; color: #ffffff; }
         .expired .status { color: #4CAF50; }
         
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 100; justify-content: center; align-items: center; }
-        .modal-content { background: linear-gradient(135deg, #4d469f, #201e4f); border-radius: 16px; padding: 30px; max-width: 500px; width: 90%; text-align: center; position: relative; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7); border: 2px solid rgba(255, 255, 255, 0.1); }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 100; justify-content: center; align-items: center; backdrop-filter: blur(2px);}
+        .modal-content { background: linear-gradient(135deg, #202020, #202020); border-radius: 16px; padding: 30px; max-width: 500px; width: 90%; text-align: center; position: relative; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7); border: 2px solid rgba(255, 255, 255, 0.1); }
         .close-btn { position: absolute; top: 15px; right: 20px; font-size: 28px; cursor: pointer; color: #aaa; transition: color 0.3s; }
         .close-btn:hover { color: #fff; }
         .modal-title { font-size: 2rem; margin-bottom: 20px; color: #ffffff; }
@@ -262,6 +363,10 @@
     </style>
 </head>
 <body>
+    <div id="pageLoader">
+        <div class="loader-title">Welcome To WhereCD</div>
+        <div class="loader-progress"><div class="loader-bar" id="loaderBar"></div></div>
+    </div>
     <div class="header">
         <h1>中国建筑电梯拍摄冷却期倒计时</h1>
         <p class="subtitle">请不要把此页面用于发泄个人恩怨</p>
@@ -271,8 +376,10 @@
     
     <div class="filters-container">
         <div class="search-container">
-            <input type="text" id="searchInput" placeholder="搜寻地点...... 可输入区域或建筑物名称">
+            <input type="text" id="searchInput" placeholder="搜寻地点......">
+            <span class="search-hint">输入区域或建筑物名称</span>
         </div>
+        <div id="searchOverlay"></div>
         <div id="region-filter-container">
             <!-- 地区筛选按钮将动态生成于此 -->
         </div>
@@ -302,7 +409,7 @@
             <h2 class="modal-title" id="modalTitle"></h2>
             <img class="modal-image" id="modalImage" src="" alt="建筑外观图">
             <p class="modal-message" id="modalMessage"></p>
-            <button class="modal-btn" id="modalButton">哦。</button>
+            <button class="modal-btn" id="modalButton">确认</button>
         </div>
     </div>
     
@@ -493,6 +600,28 @@
             });
         }
 
+        function startPageLoader() {
+            const loader = document.getElementById('pageLoader');
+            const loaderBar = document.getElementById('loaderBar');
+            const duration = 500;
+            let startTimestamp = null;
+
+            function animate(timestamp) {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const elapsed = Math.min(timestamp - startTimestamp, duration);
+                const percent = Math.round((elapsed / duration) * 100);
+                loaderBar.style.width = `${percent}%`;
+
+                if (elapsed < duration) {
+                    window.requestAnimationFrame(animate);
+                } else {
+                    loader.classList.add('hidden');
+                }
+            }
+
+            window.requestAnimationFrame(animate);
+        }
+
         async function init() {
             ongoingContainer.innerHTML = '<p class="empty-message">正在从数据库加载数据...</p>';
 
@@ -549,7 +678,10 @@
             });
         }
 
-        window.addEventListener('DOMContentLoaded', init);
+        window.addEventListener('DOMContentLoaded', () => {
+            startPageLoader();
+            init();
+        });
     </script>
 </body>
 </html>
