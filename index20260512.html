@@ -110,7 +110,7 @@
             position: relative;
             z-index: 3;
         }
-        
+
         #searchInput {
             width: 100%;
             box-sizing: border-box;
@@ -366,14 +366,6 @@
             font-weight: 600;
             display: block;
             color: #ffffff;
-        }
-
-        /*时间小字号*/
-        .time-value.small-days {
-            font-size: 1.2rem;
-            margin-top: 5.2px;
-            margin-bottom: 3px;
-            justify-content: center;
         }
 
         .time-label {
@@ -729,17 +721,10 @@
                     const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
                     const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
 
-                    const daysElement = document.getElementById(`days-${event.id}`);
-                    daysElement.textContent = days.toString().padStart(2, '0');
+                    document.getElementById(`days-${event.id}`).textContent = days.toString().padStart(2, '0');
                     document.getElementById(`hours-${event.id}`).textContent = hours.toString().padStart(2, '0');
                     document.getElementById(`minutes-${event.id}`).textContent = minutes.toString().padStart(2, '0');
                     document.getElementById(`seconds-${event.id}`).textContent = seconds.toString().padStart(2, '0');
-
-                    if (days.toString().length > 4) {
-                        daysElement.classList.add('small-days');
-                    } else {
-                        daysElement.classList.remove('small-days');
-                    }
 
                     if (event.created_at) {
                         const startDate = new Date(event.created_at);
@@ -756,7 +741,7 @@
                     }
                 }
             });
-                
+
             if (needsRender) {
                 renderCards();
             }
