@@ -94,15 +94,6 @@
             line-height: 1.6;
             color: #858585;
         }
-        
-        #device-indicator {
-            font-size: 1rem;
-            opacity: 0.9;
-            max-width: 400px;
-            margin: 0 auto 5px;
-            line-height: 1.6;
-            color: #ffffff;
-        }
 
         .filters-container {
             max-width: 1000px;
@@ -525,127 +516,113 @@
             padding: 40px 0;
             color: rgba(255, 255, 255, 0.8);
         }
-        /*设备适配部分*/
-        /* 手机UI */
-        .phone .container {
-            gap: 20px;
-        }
+        /* 手机适配 */
+        @media (max-width: 768px) {
+            .container {
+                gap: 20px;
+            }
 
-            .phone countdown-card {
+            .countdown-card {
                 width: 100%;
                 max-width: 400px;
             }
 
-            .phone h1 {
+            h1 {
                 font-size: 3.2rem;
             }
             /* 去除部分不必要的模糊效果 */
-            .phone #searchInput {
+            #searchInput {
                 backdrop-filter: blur(0px)
             }
 
-            .phone .tab-btn {
+            .tab-btn {
                 background-color: rgba(255, 255, 255, 0.15);
-                backdrop-filter: blur(0px);
-                font-size: 1rem;
+                backdrop-filter: blur(0px)
             }
 
-            .phone .tab-btn.active {
-            background-color: #fff;
-            color: #2c3e50;
-            border-color: #fff;
-            }
-
-            .phone #searchOverlay {
+            #searchOverlay {
                 background: rgba(0, 0, 0, 0.85);
                 backdrop-filter: blur(0px);
             }
 
-            .phone .search-hint {
+            .search-hint {
                 font-size: 1.8rem;
                 font-weight: 500;
                 top: -50px;
             }
-            .phone .modal-content {
-            max-width: 80%; 
+            .modal-content {
+            max-width: 480px; 
             }
-            .phone .modal-image {
-                height: 180px;
-                margin-bottom: 20px;
-            }
+        }
+        /* 极端小屏适配 */
+        @media (max-width: 480px) {
             
-        /*手表UI*/
-            .watch .modal {
+            .modal {
                 background: rgba(0, 0, 0, 0.8);
                 backdrop-filter: blur(0px);
             }
 
-            .watch h1 {
+            h1 {
                 font-size: 2.6rem;
             }
 
-            .watch #searchInput {
+            #searchInput {
                 backdrop-filter: blur(0px)
             }
 
-            .watch .tab-btn {
+            .tab-btn {
                 font-size: 0.9rem;
                 padding: 10px 20px;
                 background-color: rgba(255, 255, 255, 0.15);
                 backdrop-filter: blur(0px)
             }
-            
-            .watch .tab-btn.active {
-                background-color: #fff;
-                color: #2c3e50;
-                border-color: #fff;
-            }
 
-            .watch #searchOverlay {
+            #searchOverlay {
                 background: rgba(0, 0, 0, 0.85);
                 backdrop-filter: blur(0px);
             }
 
-            .watch .search-hint {
+            .search-hint {
                 font-size: 1.5rem;
                 font-weight: 400;
                 top: -45px;
             }
             
-            .watch #pageLoader .loader-title {
+            #pageLoader .loader-title {
                 font-size: 1.5rem;
                 letter-spacing: 0.12em;
                 font-weight: 500;
             }
 
-            .watch .modal-image {
+            .modal-image {
                 display: none;
             }
 
-            .watch .modal-content {
+            .modal-content {
             max-width: 70%; 
             }
 
-            .watch .modal-title {
+            .modal-title {
             font-size: 1.5rem;
             margin-bottom: 20px;
             color: #ffffff;
             }
-            .watch .modal-message {
+            
+        }
+/*
+        @media (max-width: 300px) {
+            .modal-message {
                 display: none;
             }
-            .watch .modal-messagesmall {
+            .modal-messagesmall {
                 display: flex;
             }
-            /*手机横屏或电脑压扁*/
-        @media (orientation: landscape) and (max-height: 450px) {
-            .modal-title {
-            font-size: 1.8rem;
-            margin-bottom: 15px;
-            }
+        }
+        <!--
+        
+        @media (max-height: 450px) {
             .modal-image {
-                height: 150px;
-                margin-bottom: 15px;
+                height: 150px;;
             }
             .modal-btn {
                 display: none;
@@ -654,12 +631,11 @@
                 font-size: 1rem;
             }
         }
-/*超窄PC浏览器*/
-        @media (orientation: landscape) and (max-height: 380px) {
+        @media (max-height: 380px) {
             .modal-image {
                 display: none;
             }
-        } 
+        } 奇葩屏幕比例*/
     </style>
 </head>
 
@@ -670,8 +646,7 @@
         <div class="loader-progress">
             <div class="loader-bar" id="loaderBar"></div>
         </div>
-        <div id="device-indicator"></div>
-        <div class="tips"><i class="fas fa-lightbulb"></i> Tips:若界面出现异常或设备识别错误，请及时报告</div>
+        <div class="tips"><i class="fas fa-lightbulb"></i> Tips:若界面出现异常，请及时报告</div>
     </div>
     <div class="header">
         <h1>中国建筑电梯拍摄冷却期倒计时</h1>
@@ -896,7 +871,7 @@
             modalTitle.textContent = event.title;
             modalImage.src = event.image;
             modalImage.onerror = () => {
-                modalImage.src = 'img/noimage.png'; modalImage.style.objectFit = 'contain';
+                modalImage.src = 'https://pic2.ziyuan.wang/user/tanxifei/2026/05/NewNoimage_11cb4765b9dee.png'; modalImage.style.objectFit = 'contain';
             }
             modalMessage.textContent = expired
                 ? `冷却期已于 ${formatDate(new Date(event.targetDate))} 结束, 导致进入冷却期的原因: ${event.description}`
@@ -1001,109 +976,6 @@
             init();
         });
     </script>
-    <script>(function() {
-  function ensureIndicator() {
-    let el = document.getElementById('device-indicator');
-    if (!el) {
-      el = document.createElement('div');
-      el.id = 'device-indicator';
-      document.body.appendChild(el);
-    }
-    return el;
-  }
-
-  function updateDeviceUI(type, icon) {
-    const html = document.documentElement;
-    // 移除所有可能的设备类
-    html.classList.remove('phone', 'tablet', 'desktop', 'hybrid', 'watch');
-    html.classList.add(type);
-
-    const indicator = ensureIndicator();
-    const labels = {
-      phone: '手机',
-      tablet: '平板/触屏桌面',
-      desktop: '桌面',
-      hybrid: '触屏桌面',
-      watch: '智能手表'         
-    };
-    indicator.innerHTML = `<span>当前访问的是</span> ${labels[type] || '未知设备'}<span> 版本网页</span>`;
-  }
-
-  function detectAndApply() {
-    const hasCoarse = matchMedia('(pointer: coarse)').matches;
-    const hasFine   = matchMedia('(pointer: fine)').matches;
-    const hasAnyCoarse = matchMedia('(any-pointer: coarse)').matches;
-    const noHover   = matchMedia('(hover: none)').matches;
-    const hasHover  = matchMedia('(hover: hover)').matches;
-    const small     = matchMedia('(max-width: 767px)').matches;
-    const large     = matchMedia('(min-width: 1024px)').matches;
-    const medium    = matchMedia('(min-width: 768px) and (max-width: 1023px)').matches;
-
-    // 新增：手表尺寸（宽高均小于 480 CSS像素）
-    const isWatchSize = matchMedia('(max-width: 479px) and (max-height: 479px)').matches;
-
-    const touchPoints = navigator.maxTouchPoints || 0;
-    const touchEvent  = 'ontouchstart' in window;
-    const touchable   = touchEvent || touchPoints > 0;
-    const isIPad      = (navigator.platform === 'MacIntel' && touchPoints > 1) ||
-                        (/iPad|Macintosh/.test(navigator.userAgent) && touchPoints > 2);
-
-    let deviceType = 'desktop';
-    let icon = '🖥️';
-
-    // ---------- 优先级最高：智能手表 ----------
-    if (isWatchSize && hasCoarse && noHover && touchable) {
-      deviceType = 'watch';
-    }
-    // ---------- 手机 ----------
-    else if (small && hasCoarse && noHover && touchable) {
-      deviceType = 'phone';
-    }
-    // ---------- 平板 / 触屏桌面 ----------
-    else if ((medium || large) && hasCoarse && noHover && touchable) {
-      if (touchPoints >= 2 || isIPad) {
-        deviceType = 'tablet';
-      } else if (large && touchPoints <= 1) {
-        deviceType = 'hybrid';
-      } else {
-        deviceType = 'tablet';
-      }
-    }
-    // ---------- 典型桌面 ----------
-    else if (hasFine && hasHover && large && !touchable) {
-      deviceType = 'desktop';
-    }
-    // ---------- 外接鼠标的触摸设备 ----------
-    else if (hasFine && hasHover && touchable) {
-      if (small) {
-        deviceType = 'phone';
-      } else if (touchPoints >= 2 || isIPad) {
-        deviceType = 'tablet';
-      } else {
-        deviceType = 'hybrid';
-      }
-    }
-    // ---------- 兜底 ----------
-    else if (hasAnyCoarse && touchable) {
-      deviceType = small ? 'phone' : 'tablet';
-      icon = small ? '📱' : '📋';
-    }
-
-    updateDeviceUI(deviceType, icon);
-  }
-
-  detectAndApply();
-
-  let resizeTimer;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(detectAndApply, 200);
-  });
-
-  ['(pointer: fine)', '(pointer: coarse)', '(hover: hover)', '(hover: none)'].forEach(q => {
-    matchMedia(q).addEventListener('change', detectAndApply);
-  });
-})();</script>
 </body>
 
 </html>
