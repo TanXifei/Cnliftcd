@@ -230,7 +230,7 @@
             padding: 8px 18px;
             font-size: 0.9rem;
             color: #fff;
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.15);
             border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             cursor: pointer;
@@ -423,7 +423,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.7);
             z-index: 100;
             justify-content: center;
             align-items: center;
@@ -466,6 +466,14 @@
             font-size: 1.2rem;
             margin-bottom: 30px;
             line-height: 1.6;
+            display: flex;
+        }
+
+        .modal-messagesmall {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            display: none;
         }
 
         .modal-image {
@@ -508,7 +516,7 @@
             padding: 40px 0;
             color: rgba(255, 255, 255, 0.8);
         }
-
+        /* 手机适配 */
         @media (max-width: 768px) {
             .container {
                 gap: 20px;
@@ -522,16 +530,109 @@
             h1 {
                 font-size: 3.2rem;
             }
-        }
-
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 2.8rem;
+            /* 去除部分不必要的模糊效果 */
+            #searchInput {
+                backdrop-filter: blur(0px)
             }
 
             .tab-btn {
-                font-size: 1rem;
+                background-color: rgba(255, 255, 255, 0.15);
+                backdrop-filter: blur(0px)
+            }
+
+            #searchOverlay {
+                background: rgba(0, 0, 0, 0.85);
+                backdrop-filter: blur(0px);
+            }
+
+            .search-hint {
+                font-size: 1.8rem;
+                font-weight: 500;
+                top: -50px;
+            }
+            .modal-content {
+            max-width: 480px; 
+            }
+        }
+        /* 极端小屏适配 */
+        @media (max-width: 480px) {
+            
+            .modal {
+                background: rgba(0, 0, 0, 0.8);
+                backdrop-filter: blur(0px);
+            }
+
+            h1 {
+                font-size: 2.6rem;
+            }
+
+            #searchInput {
+                backdrop-filter: blur(0px)
+            }
+
+            .tab-btn {
+                font-size: 0.9rem;
                 padding: 10px 20px;
+                background-color: rgba(255, 255, 255, 0.15);
+                backdrop-filter: blur(0px)
+            }
+
+            #searchOverlay {
+                background: rgba(0, 0, 0, 0.85);
+                backdrop-filter: blur(0px);
+            }
+
+            .search-hint {
+                font-size: 1.5rem;
+                font-weight: 400;
+                top: -45px;
+            }
+            
+            #pageLoader .loader-title {
+                font-size: 1.5rem;
+                letter-spacing: 0.12em;
+                font-weight: 500;
+            }
+
+            .modal-image {
+                display: none;
+            }
+
+            .modal-content {
+            max-width: 70%; 
+            }
+
+            .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #ffffff;
+            }
+            
+        }
+
+        @media (max-width: 300px) {
+            .modal-message {
+                display: none;
+            }
+            .modal-messagesmall {
+                display: flex;
+            }
+        }
+        /*奇葩屏幕比例*/
+        @media (max-height: 450px) {
+            .modal-image {
+                height: 150px;;
+            }
+            .modal-btn {
+                display: none;
+            }
+            .modal-message{
+                font-size: 1rem;
+            }
+        }
+        @media (max-height: 380px) {
+            .modal-image {
+                display: none;
             }
         }
     </style>
@@ -587,6 +688,7 @@
             <h2 class="modal-title" id="modalTitle"></h2>
             <img class="modal-image" id="modalImage" src="" alt="建筑外观图">
             <p class="modal-message" id="modalMessage"></p>
+            <p class="modal-messagesmall" id="modalMessagesmall"></p>
             <button class="modal-btn" id="modalButton">确认</button>
         </div>
     </div>
@@ -617,6 +719,7 @@
         const modalTitle = document.getElementById('modalTitle');
         const modalImage = document.getElementById('modalImage');
         const modalMessage = document.getElementById('modalMessage');
+        const modalMessagsmall = document.getElementById('modalMessagesmall');
         const closeModalBtn = document.getElementById('closeModal');
         const modalButton = document.getElementById('modalButton');
 
@@ -767,11 +870,14 @@
             modalTitle.textContent = event.title;
             modalImage.src = event.image;
             modalImage.onerror = () => {
-                modalImage.src = 'https://pic2.ziyuan.wang/user/tanxifei/2026/05/00noimage_34362ab49fcbc.png'; modalImage.style.objectFit = 'contain';
+                modalImage.src = 'https://pic2.ziyuan.wang/user/tanxifei/2026/05/NewNoimage_11cb4765b9dee.png'; modalImage.style.objectFit = 'contain';
             }
             modalMessage.textContent = expired
                 ? `冷却期已于 ${formatDate(new Date(event.targetDate))} 结束, 导致进入冷却期的原因: ${event.description}`
                 : `冷却期将在 ${formatDate(new Date(event.targetDate))} 结束, 导致进入冷却期的原因: ${event.description}`;
+            modalMessagesmall.textContent = expired
+                ? `冷却期已于 ${formatDate(new Date(event.targetDate))} 结束`
+                : `冷却期将在 ${formatDate(new Date(event.targetDate))} 结束`;
             modal.style.display = 'flex';
         }
 
